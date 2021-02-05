@@ -105,6 +105,7 @@ export default function SelectInput(props: SelectProps) {
     const componentRef = React.useRef(null);
 
     const clearRequiredInput = useRequiredInputValidator(required, componentRef, currentValue, setError);
+
     const hasError = Boolean(error);
 
     // const checkNoneItem = React.useCallback(() => {

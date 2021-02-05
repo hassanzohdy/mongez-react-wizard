@@ -12,7 +12,7 @@ function uniqueId(item) {
 }
 
 export interface RowWrapperProps {
-    component?: React.FC;
+    component?: React.FC | React.ComponentClass;
     item: any;
     children: React.ReactNode | React.ReactNode[];
     [key: string]: any;

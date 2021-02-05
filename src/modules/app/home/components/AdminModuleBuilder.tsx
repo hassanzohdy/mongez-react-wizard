@@ -7,28 +7,6 @@ import TranslationsTab from './TranslationsTab';
 import TableSettingsTab from './TableSettingsTab';
 
 export default function AdminModuleBuilder({ appSettings }) {
-    const [data, setData] = React.useState({
-        appName: null,
-        moduleName: null,
-        route: null,
-        role: null,
-        serviceRoute: null,
-        serviceClassName: null,
-        serviceObjectName: null,
-        sidebarIconImport: null,
-        sidebarIconName: null,
-        viewable: false,
-    });
-
-    const setFromInput = key => e => set(key, e.target.value);
-
-    const set = (key, value) => {
-        setData({
-            ...data,
-            [key]: value,
-        });
-    }
-
     const submitForm = (e, form) => {
 
     };
@@ -41,7 +19,7 @@ export default function AdminModuleBuilder({ appSettings }) {
                 <FormContentWrapper>
                     <Tabs value={2}>
                         <Tab label="General Settings">
-                            <GeneralSettingsTab setData={setData} setFromInput={setFromInput} data={data} appSettings={appSettings} />
+                            <GeneralSettingsTab appSettings={appSettings} />
                         </Tab>
                         <Tab label="Translations">
                             <TranslationsTab appSettings={appSettings} />

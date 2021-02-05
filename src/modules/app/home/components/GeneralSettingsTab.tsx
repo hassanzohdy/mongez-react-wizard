@@ -1,9 +1,33 @@
 import React from 'react'
 import { Checkbox, SelectInput, TextInput } from 'reactor/form'
 import { toCamelCase, toStudlyCase } from 'reinforcements';
-import { EmptyNote, InputsWrapper, InputWrapper, RowHeading } from './Helpers'
+import { Note, InputsWrapper, InputWrapper, RowHeading } from './Helpers';
+import Alert from '@material-ui/lab/Alert';
 
-export default function GeneralSettingsTab({ setData, data, setFromInput, appSettings }) {
+
+export default function GeneralSettingsTab({ appSettings }) {
+    const [data, setData] = React.useState({
+        appName: null,
+        moduleName: null,
+        route: null,
+        role: null,
+        serviceRoute: null,
+        serviceClassName: null,
+        serviceObjectName: null,
+        sidebarIconImport: null,
+        sidebarIconName: null,
+        viewable: false,
+    });
+
+    const setFromInput = key => e => set(key, e.target.value);
+
+    const set = (key, value) => {
+        setData({
+            ...data,
+            [key]: value,
+        });
+    }
+
     const setModule = e => {
         let moduleName = e.target.value;
 
@@ -20,17 +44,17 @@ export default function GeneralSettingsTab({ setData, data, setFromInput, appSet
 
     return (
         <>
-            <EmptyNote />
+            <Alert severity="info">Any Non Required Input will be auto filled from the module name if no value provided.</Alert>
             <InputsWrapper>
                 <RowHeading heading="App And Module Name" />
                 <InputWrapper>
-                    <SelectInput name="appName" value={data.appName} onChange={setFromInput('appName')} required items={appSettings.apps} label="App Name" />
+                    <SelectInput name="appName" value={data.appName} onChange={item => set('appName', item.value)} required items={appSettings.apps} label="App Name" />
                 </InputWrapper>
                 <InputWrapper>
                     <TextInput margin="none" name="moduleName" onChange={setModule} required label="Module Name" />
                 </InputWrapper>
                 <InputWrapper>
-                    <Checkbox name="viewable" label="Has Single Details Page" checked={data.viewable} onChange={checked => setData({...data, viewable: checked})} />
+                    <Checkbox name="viewable" label="Has Single Details Page" checked={data.viewable} onChange={checked => setData({ ...data, viewable: checked })} />
                 </InputWrapper>
             </InputsWrapper>
             <InputsWrapper>

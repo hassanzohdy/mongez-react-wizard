@@ -13,7 +13,7 @@ export type DeleteRowButtonProps = {
     iconColor?: string;
     icon?: React.ReactNode;
     tooltip?: string;
-    marginTop?: string;
+    marginTop?: string | number;
     setItems: Function;
 }
 

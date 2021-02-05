@@ -26,8 +26,6 @@ export const Note = styled('h3')({
     fontSize: '0.8rem',
 })
 
-export const EmptyNote = () => <Note>Any Non Required Input will be auto filled if no value provided.</Note>;
-
 export const HeadingWrapperContent = ({ text }) => (
     <HeadingWrapper>
         <Heading>{text}</Heading>
