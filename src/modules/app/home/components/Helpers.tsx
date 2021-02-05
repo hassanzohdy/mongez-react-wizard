@@ -1,6 +1,7 @@
 import React from 'react';
-import { styled } from '@material-ui/core';
+import { Button, styled } from '@material-ui/core';
 import { GridContainer, GridItem } from 'reactor/components';
+import { adminColor, cloneModulesColor, frontOfficeColor } from './flags';
 
 export const InputWrapper = props => <GridItem {...props}></GridItem>;
 
@@ -9,12 +10,25 @@ export const FormContentWrapper = styled('div')({
     width: '60%',
 });
 
+export const MultiRowWrapper = styled(GridContainer)({
+    marginTop: '1rem',
+    marginBottom: '1rem',
+    paddingBottom: '1rem',
+    borderBottom: '1px solid #eee',
+});
+
 export const InputsWrapper = props => <GridContainer spacing={2} {...props} />;
 
+export const HeadingText = styled('h3')({
+    marginTop: '0.6rem',
+    fontSize: '1.4rem',
+    marginBottom: 0,
+});
+
 export const RowHeading = ({ heading }) => (
-    <InputWrapper xs={12}>
-        <h3>{heading}</h3>
-    </InputWrapper>
+    <InputsWrapper spacing={0}>
+        <HeadingText>{heading}</HeadingText>
+    </InputsWrapper>
 )
 
 export const Note = styled('h3')({
@@ -52,4 +66,37 @@ export const Line = styled('div')({
 export const Heading2 = styled('h2')({
     fontWeight: 'bold',
     textAlign: 'center'
+});
+
+
+export const WizardButton = styled(Button)({
+    '&:disabled': {
+        paddingBottom: 0,
+    }
+})
+
+export const AdminButton = styled(WizardButton)({
+    color: '#FFF',
+    marginRight: '2rem',
+    backgroundColor: adminColor,
+    '&:hover': {
+        backgroundColor: adminColor,
+    }
+});
+
+export const CloneModulesButton = styled(WizardButton)({
+    color: '#FFF',
+    marginRight: '2rem',
+    backgroundColor: cloneModulesColor,
+    '&:hover': {
+        backgroundColor: cloneModulesColor,
+    }
+});
+
+export const FrontOfficeButton = styled(WizardButton)({
+    color: '#FFF',
+    backgroundColor: frontOfficeColor,
+    '&:hover': {
+        backgroundColor: frontOfficeColor,
+    }
 });

@@ -14,6 +14,7 @@ import { Checkbox, Chip, FormHelperText, styled } from '@material-ui/core';
 import useRequiredInputValidator from '../hooks/use-required-input-validator';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Label from './Label';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -58,7 +59,7 @@ export default function AutoComplete(props: any) {
         return response.data.records.map(mapItem);
     };
 
-    let { label, request, InputProps = {}, imageable, searchable, lazyLoading, groupBy, mapItem = mapItemInternally, addable = false, closeOnSelect, onChange, loadingText = trans('loading'), noOptionsText = trans('noOptions'), autoHighlight, items, name, value, multiple, required, mapResponse = defaultMapResponse, ...otherProps } = props;
+    let { label, request, InputProps = {}, imageable, margin = 'normal', searchable, lazyLoading, groupBy, mapItem = mapItemInternally, addable = false, closeOnSelect, onChange, loadingText = trans('loading'), noOptionsText = trans('noOptions'), autoHighlight, items, name, value, multiple, required, mapResponse = defaultMapResponse, ...otherProps } = props;
     const [open, setOpen] = React.useState(false);
     const [currentSearchText, setSearchText] = React.useState('');
     const [isLoading, setLoading] = React.useState(() => {
@@ -274,8 +275,9 @@ export default function AutoComplete(props: any) {
                 renderInput={(params) => {
                     return <TextField
                         {...params}
-                        label={isLoading ? loadingText : trans(label)}
+                        label={isLoading ? loadingText : <Label label={label} required={required} />}
                         variant="outlined"
+                        margin={margin}
                         onChange={remoteSearch}
                         InputProps={{
                             ...params.InputProps,

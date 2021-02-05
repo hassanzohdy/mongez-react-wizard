@@ -1,22 +1,32 @@
 import React from 'react'
 import { Checkbox, SelectInput, TextInput } from 'reactor/form'
 import { toCamelCase, toStudlyCase } from 'reinforcements';
-import { Note, InputsWrapper, InputWrapper, RowHeading } from './Helpers';
+import { Note, InputsWrapper, InputWrapper, HeadingText } from './Helpers';
 import Alert from '@material-ui/lab/Alert';
+import AppSettingsContext from './AppSettingsContext';
+import { styled } from '@material-ui/core';
+import { GridContainer } from 'reactor/components';
 
+const Wrapper = styled(GridContainer)({
+    marginTop: '1rem',
+    padding: 0,
+});
 
-export default function GeneralSettingsTab({ appSettings }) {
+const RowHeading = ({ heading }) => <Wrapper><HeadingText children={heading} /></Wrapper>
+
+export default function GeneralSettingsTab() {
+    const appSettings = React.useContext(AppSettingsContext);
     const [data, setData] = React.useState({
-        appName: null,
-        moduleName: null,
-        route: null,
         role: null,
+        route: null,
+        appName: null,
+        viewable: false,
+        moduleName: null,
         serviceRoute: null,
+        sidebarIconName: null,
         serviceClassName: null,
         serviceObjectName: null,
         sidebarIconImport: null,
-        sidebarIconName: null,
-        viewable: false,
     });
 
     const setFromInput = key => e => set(key, e.target.value);
@@ -48,10 +58,10 @@ export default function GeneralSettingsTab({ appSettings }) {
             <InputsWrapper>
                 <RowHeading heading="App And Module Name" />
                 <InputWrapper>
-                    <SelectInput name="appName" value={data.appName} onChange={item => set('appName', item.value)} required items={appSettings.apps} label="App Name" />
+                    <SelectInput name="appName" value={data.appName} onChange={item => { set('appName', item.value); appSettings.currentApp = item.value; }} required items={appSettings.apps} label="App Name" />
                 </InputWrapper>
                 <InputWrapper>
-                    <TextInput margin="none" name="moduleName" onChange={setModule} required label="Module Name" />
+                    <TextInput name="moduleName" onChange={setModule} required label="Module Name" />
                 </InputWrapper>
                 <InputWrapper>
                     <Checkbox name="viewable" label="Has Single Details Page" checked={data.viewable} onChange={checked => setData({ ...data, viewable: checked })} />
@@ -68,7 +78,7 @@ export default function GeneralSettingsTab({ appSettings }) {
             </InputsWrapper>
             <InputsWrapper>
                 <RowHeading heading="Service API" />
-                <InputWrapper xs={12}>
+                <InputWrapper>
                     <TextInput name="serviceRoute" value={data.serviceRoute} onChange={setFromInput('serviceRoute')} label="API Route (Starts With /)" />
                 </InputWrapper>
                 <InputWrapper>

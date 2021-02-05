@@ -4,6 +4,7 @@ import { rtrim } from 'reinforcements';
 import HiddenInput from './HiddenInput';
 import { trans } from './../../localization';
 import BaseChipInput from 'material-ui-chip-input';
+import { PropTypes } from '@material-ui/core';
 
 interface ChipProps {
     value?: string[];
@@ -11,6 +12,7 @@ interface ChipProps {
     name?: string;
     placeholder?: string;
     label?: string;
+    margin?: PropTypes.Margin;
 }
 
 export default function ChipInput(props: ChipProps) {
@@ -38,6 +40,8 @@ export default function ChipInput(props: ChipProps) {
             )} />
             <BaseChipInput
                 fullWidth
+                margin={props.margin || 'normal'}
+                label={props.label}
                 newChipKeys={['Enter', ',']}
                 variant="outlined"
                 alwaysShowPlaceholder

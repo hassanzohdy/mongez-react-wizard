@@ -2,9 +2,12 @@ import React from 'react'
 import { AddRowButton, DeleteRowButton, For, Log, RowWrapper } from 'reactor/components'
 import { TextInput } from 'reactor/form';
 import { toStudlyCase } from 'reinforcements'
+import AppSettingsContext from './AppSettingsContext';
 import { InputsWrapper, InputWrapper, RowHeading } from './Helpers';
 
-export default function TranslationsTab({ appSettings }) {
+export default function TranslationsTab() {
+    const appSettings = React.useContext(AppSettingsContext);
+
     const newTranslation = () => {
         let translation = {
             name: null,

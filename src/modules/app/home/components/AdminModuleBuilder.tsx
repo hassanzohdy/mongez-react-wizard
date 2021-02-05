@@ -5,9 +5,9 @@ import { FormContentWrapper, HeadingWrapperContent } from './Helpers'
 import GeneralSettingsTab from './GeneralSettingsTab';
 import TranslationsTab from './TranslationsTab';
 import TableSettingsTab from './TableSettingsTab';
-import FormInputsTab from './FormInputsTab';
+import FormSettingsTab from './FormSettingsTab';
 
-export default function AdminModuleBuilder({ appSettings }) {
+export default function AdminModuleBuilder() {
     const submitForm = (e, form) => {
 
     };
@@ -18,18 +18,18 @@ export default function AdminModuleBuilder({ appSettings }) {
 
             <Form onSubmit={submitForm}>
                 <FormContentWrapper>
-                    <Tabs value={2}>
+                    <Tabs>
                         <Tab label="General Settings">
-                            <GeneralSettingsTab appSettings={appSettings} />
+                            <GeneralSettingsTab />
                         </Tab>
                         <Tab label="Translations">
-                            <TranslationsTab appSettings={appSettings} />
+                            <TranslationsTab />
                         </Tab>
                         <Tab label="Table Settings">
-                            <TableSettingsTab appSettings={appSettings} />
+                            <TableSettingsTab />
                         </Tab>
                         <Tab label="Form Inputs">
-                            <FormInputsTab appSettings={appSettings} />
+                            <FormSettingsTab />
                         </Tab>
                     </Tabs>
                 </FormContentWrapper>

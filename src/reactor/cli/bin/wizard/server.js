@@ -17,7 +17,7 @@ const serve = function (port) {
 
     let openOptions = {};
 
-    open(url, openOptions);
+    // open(url, openOptions);
 };
 
 module.exports = { app, serve };

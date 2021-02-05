@@ -1,48 +1,11 @@
 import React from 'react';
-import { Button, styled } from '@material-ui/core';
+import { styled } from '@material-ui/core';
 import { CircleProgress, TextCenter } from 'reactor/components';
-import { Heading2, HeadingWrapperContent } from './Helpers';
-
-const cloneModulesColor = '#1eb939';
-const adminColor = '#ff006f';
-const frontOfficeColor = '#2c87de';
-
-const WizardButton = styled(Button)({
-    '&:disabled': {
-        paddingBottom: 0,
-    }
-})
-
-const AdminButton = styled(WizardButton)({
-    color: '#FFF',
-    marginRight: '2rem',
-    backgroundColor: adminColor,
-    '&:hover': {
-        backgroundColor: adminColor,
-    }
-});
-
-const CloneModulesButton = styled(WizardButton)({
-    color: '#FFF',
-    marginRight: '2rem',
-    backgroundColor: cloneModulesColor,
-    '&:hover': {
-        backgroundColor: cloneModulesColor,
-    }
-});
-
-const FrontOfficeButton = styled(WizardButton)({
-    color: '#FFF',
-    backgroundColor: frontOfficeColor,
-    '&:hover': {
-        backgroundColor: frontOfficeColor,
-    }
-});
+import { Heading2, HeadingWrapperContent, CloneModulesButton, AdminButton, FrontOfficeButton } from './Helpers';
 
 const Content = styled('div')({
     marginTop: '10%',
 });
-
 
 export default function HomeHeading({ loading, setModuleType }) {
     return (
@@ -50,8 +13,7 @@ export default function HomeHeading({ loading, setModuleType }) {
             <HeadingWrapperContent text={'Mongez Wizard'} />
 
             <Content>
-                <Heading2>What Do You Want To Do?</Heading2>
-
+                <Heading2>What Shall We Do Now?</Heading2>
 
                 <TextCenter>
                     <CloneModulesButton disabled={loading} onClick={() => setModuleType('admin')}>

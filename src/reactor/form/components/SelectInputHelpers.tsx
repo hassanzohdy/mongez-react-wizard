@@ -4,6 +4,7 @@ import { Avatar } from '../../components';
 import { trans } from './../../localization';
 import { getItem, getItems } from '../utils/select-items';
 import { makeStyles, MenuItem, Chip, styled } from '@material-ui/core';
+import { Obj } from 'reinforcements';
 
 const useStyles = makeStyles((theme) => ({
     chips: {
@@ -49,7 +50,7 @@ const renderItems = (items, imagable) => {
     });
 };
 
-export const selectItems = (items, grouped, isLoading, imagable) => {
+export const selectItems = (items, groupBy, isLoading, imagable) => {
     if (isLoading) {
         items = [{
             label: trans('loading'),
@@ -58,9 +59,9 @@ export const selectItems = (items, grouped, isLoading, imagable) => {
         }];
     }
 
-    if (grouped) {
+    if (groupBy) {
         return items.map((item, index) => {
-            return [<MenuItemGroup imagable={imagable} key={index} group={item.group} />, ...renderItems(item.items, imagable)];
+            return [<MenuItemGroup imagable={imagable} key={index} group={Obj.get(item, 'groupBy')} />, ...renderItems(item.items, imagable)];
         });
     }
 
@@ -99,7 +100,7 @@ const RenderMultipleSelectedItems = ({ selectedItems }) => {
     )
 };
 
-export function RenderSelectedValues({ items, selected, opened, grouped, label, placeholder, imagable }): any {
+export function RenderSelectedValues({ items, selected, opened, groupBy, label, placeholder, imagable }): any {
     // Render Placeholder On Empty Selection as a text 
 
     if (Is.empty(selected) || Is.empty(items)) {
@@ -112,9 +113,9 @@ export function RenderSelectedValues({ items, selected, opened, grouped, label, 
     // if the selected is an array 
     // then render the selected items in chips for now
     if (Is.array(selected)) {
-        return <RenderMultipleSelectedItems selectedItems={getItems(items, selected, grouped)} />
+        return <RenderMultipleSelectedItems selectedItems={getItems(items, selected, groupBy)} />
     }
 
     // render single selection
-    return <RenderSelectedItem imagable={imagable} item={getItem(items, selected, grouped)} />
+    return <RenderSelectedItem imagable={imagable} item={getItem(items, selected, groupBy)} />
 }

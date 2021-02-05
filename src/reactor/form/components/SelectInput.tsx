@@ -8,7 +8,7 @@ import { toInputName } from 'reinforcements';
 import { getItem } from '../utils/select-items';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
-import { Select, FormHelperText } from '@material-ui/core';
+import { Select, FormHelperText, PropTypes } from '@material-ui/core';
 import { selectItems, RenderSelectedValues } from './SelectInputHelpers';
 import useRequiredInputValidator from '../hooks/use-required-input-validator';
 
@@ -41,11 +41,11 @@ function defaultMapItem(item) {
     return item;
 }
 
-interface SelectProps {
+export interface SelectProps {
     id?: string;
     label?: string;
     name?: string;
-    grouped?: boolean;
+    groupBy?: string;
     classes?: any;
     fullWidth?: boolean;
     variant?: 'standard' | 'outlined' | 'filled';
@@ -61,10 +61,12 @@ interface SelectProps {
     imagable?: boolean | string;
     iconable?: boolean;
     multiple?: boolean;
+    margin?: PropTypes.Margin;
     readOnly?: boolean;
     mapItem?: Function;
     none?: boolean;
-}
+    disabled?: boolean;
+};
 
 export default function SelectInput(props: SelectProps) {
     const mapItems = items => {
@@ -76,7 +78,7 @@ export default function SelectInput(props: SelectProps) {
         return mapItems(response.data.records);
     };
 
-    let { id, label, name, grouped, classes = {}, mapItem = defaultMapItem, fullWidth = true, variant = 'outlined', onChange, lazyLoading, request, mapResponse = defaultMapResponse, labelId, placeholder, required, value = '', items, imagable, iconable, multiple, readOnly, none, ...otherProps } = props;
+    let { id, label, name, groupBy, classes = {}, mapItem = defaultMapItem, fullWidth = true, variant = 'outlined', margin = "normal", onChange, lazyLoading, request, mapResponse = defaultMapResponse, labelId, placeholder, required, value = '', items, imagable, iconable, multiple, readOnly, none, ...otherProps } = props;
     // for multiple selections
     if (multiple && !value) {
         value = [];
@@ -193,7 +195,7 @@ export default function SelectInput(props: SelectProps) {
     };
 
     return (
-        <FormControl variant={variant} fullWidth={fullWidth} className={classes.formControl} error={hasError}>
+        <FormControl margin={margin} variant={variant} fullWidth={fullWidth} className={classes.formControl} error={hasError}>
             <Label component={InputLabel} required={required} id={labelId} label={label} />
             <Select
                 id={id}
@@ -207,8 +209,8 @@ export default function SelectInput(props: SelectProps) {
                 value={currentValue}
                 name={toInputName(name)}
                 onChange={handleChange}
-                renderValue={selected => <RenderSelectedValues imagable={imagable} grouped={grouped} opened={opened} placeholder={placeholder} label={label} items={currentItems} selected={selected} />}
-                children={selectItems(currentItems, grouped, isLoading, imagable)}
+                renderValue={selected => <RenderSelectedValues imagable={imagable} groupBy={groupBy} opened={opened} placeholder={placeholder} label={label} items={currentItems} selected={selected} />}
+                children={selectItems(currentItems, groupBy, isLoading, imagable)}
                 {...otherProps}
             />
 

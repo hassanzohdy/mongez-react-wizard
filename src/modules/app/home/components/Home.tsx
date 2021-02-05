@@ -1,9 +1,10 @@
 import React from 'react';
-import { useOnce } from 'reactor/hooks';
 import endpoint from 'reactor/http';
-import AdminModuleBuilder from './AdminModuleBuilder';
-import FrontOfficeModuleBuilder from './FrontOfficeModuleBuilder';
+import { useOnce } from 'reactor/hooks';
 import HomeHeading from './HomeHeading';
+import AdminModuleBuilder from './AdminModuleBuilder';
+import AppSettingsContext from './AppSettingsContext';
+import FrontOfficeModuleBuilder from './FrontOfficeModuleBuilder';
 
 export default function Home() {
     const [moduleType, setModuleType] = React.useState(null);
@@ -13,18 +14,16 @@ export default function Home() {
 
     useOnce(() => {
         endpoint.get('/settings').then(response => {
-            console.log(response.data);
-            
             setAppSettings(response.data);
         })
     });
 
     return (
-        <>
+        <AppSettingsContext.Provider value={appSettings}>
             {!moduleType && <HomeHeading loading={appSettings === null} setModuleType={setModuleType} />}
 
-            {appSettings && moduleType == 'admin' && <AdminModuleBuilder appSettings={appSettings} />}
-            {appSettings && moduleType == 'front-office' && <FrontOfficeModuleBuilder appSettings={appSettings} />}
-        </>
+            {appSettings && moduleType == 'admin' && <AdminModuleBuilder />}
+            {appSettings && moduleType == 'front-office' && <FrontOfficeModuleBuilder />}
+        </AppSettingsContext.Provider>
     )
 } 
