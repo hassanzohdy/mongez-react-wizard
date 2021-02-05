@@ -5,6 +5,7 @@ import { FormContentWrapper, HeadingWrapperContent } from './Helpers'
 import GeneralSettingsTab from './GeneralSettingsTab';
 import TranslationsTab from './TranslationsTab';
 import TableSettingsTab from './TableSettingsTab';
+import FormInputsTab from './FormInputsTab';
 
 export default function AdminModuleBuilder({ appSettings }) {
     const [data, setData] = React.useState({
@@ -48,6 +49,9 @@ export default function AdminModuleBuilder({ appSettings }) {
                         </Tab>
                         <Tab label="Table Settings">
                             <TableSettingsTab appSettings={appSettings} />
+                        </Tab>
+                        <Tab label="Form Inputs">
+                            <FormInputsTab appSettings={appSettings} />
                         </Tab>
                     </Tabs>
                 </FormContentWrapper>
