@@ -1,0 +1,6 @@
+import {{ Component }} from './{{ Component }}';
+
+// types
+export * from './types';
+
+export default {{ Component }};

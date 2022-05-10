@@ -1,0 +1,7 @@
+#! /usr/bin/env node
+
+// the cjs will be added automatically when building the project
+// so it must be set in the path here
+const letTheMagicBegin = require("./cjs/app");
+
+letTheMagicBegin();

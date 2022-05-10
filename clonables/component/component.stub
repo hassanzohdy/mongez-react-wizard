@@ -1,0 +1,8 @@
+{{ imports }}
+export default function {{ Component }}(props: {{ Component }}Props) {
+  return (
+    <>
+      {{ prependToComponent }}<h1>{{ Component }} Component</h1>
+    </>
+  )
+}

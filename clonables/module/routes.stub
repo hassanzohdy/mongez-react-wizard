@@ -1,0 +1,10 @@
+import URLS from "apps/{{ appName }}/helpers/urls";
+import { publicRoutes } from "apps/{{ appName }}/helpers/router";
+import {{ ModuleComponentPage }} from "./components/{{ ModuleComponentPage }}";
+
+publicRoutes([
+  {
+    path: URLS.{{ route }},
+    component: {{ ModuleComponentPage }},
+  },
+]);

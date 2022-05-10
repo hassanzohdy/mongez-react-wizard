@@ -1,0 +1,12 @@
+import { RestfulEndpoint } from "@mongez/http";
+
+class {{ ModuleService }} extends RestfulEndpoint {
+  /**
+   * {@inheritDoc}
+   */
+  public route: string = '{{ routeString }}';
+}
+
+const {{ moduleService }}: {{ ModuleService }} = new {{ ModuleService }}();
+
+export default {{ moduleService }};
