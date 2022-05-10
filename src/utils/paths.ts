@@ -18,7 +18,7 @@ export function apps(...appendPath: string[]): string {
 }
 
 export function mongezRoot(...appendPath: string[]): string {
-  return root("mongez", ...appendPath);
+  return root(".mongez", ...appendPath);
 }
 
 export function wizardPath(): string {

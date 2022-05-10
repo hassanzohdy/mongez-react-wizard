@@ -9,9 +9,10 @@ import createComponent from "./createComponent";
 export type ModuleCreator = {
     app: string;
     module: string;
+    style?: 'scss' | 'styled' | 'all';
 }
 
-export default function createModule({ module, app }: ModuleCreator) {
+export default function createModule({ style, module, app }: ModuleCreator) {
     const appDirectory = apps(app);
     const moduleDirectory = apps(app, module);
 
@@ -51,10 +52,12 @@ export default function createModule({ module, app }: ModuleCreator) {
 
     createComponent({
         module,
+        style,
         app,
         component: data.Module + 'Page',
         imports: 'import Helmet from "@mongez/react-helmet";',
         prependToComponent: `<Helmet title="${data.Module + 'Page'}" />`,
     });
+
     console.log(chalk.greenBright(`${data.Module} Module Has Been Created Successfully.`));
 }

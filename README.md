@@ -11,6 +11,8 @@ OR
 
 `npm i @mongez/react-wizard`
 
+> Please note that a `.mongez` directory will be created `if not found` to store cached configurations. 
+
 ## Usage
 
 The package works through command line for the time being, Here are the available commands.
@@ -59,6 +61,13 @@ The `services` directory is for ajax requests, by default it creates a Restful S
 Also, `publicRoutes` function which is imported from `apps/{appName}/helpers/router`.
 
 For component structure, check the following section.
+
+Available Options
+
+| Option    	| Description                                                                                          	| Required 	| Cacheable	|
+|-----------	|------------------------------------------------------------------------------------------------------	|----------	|----------	|
+| `--app`    	| Application directory name that will contain the module                                              	| **Yes** If not cached  	| **Yes**  	|
+| `--style` 	| Defines the generated component style mode, it can be `styled` \| `scss` \| `all`, defaults to `all` 	| **No**   	| **Yes**  	|
 
 ## Generate New Component Command
 
@@ -119,7 +128,18 @@ The final generated module and component will be like:
             |-- routes.ts
             |-- provider.ts
 ```
+Available Options
 
+| Option    	| Description                                                                                          	| Required 	| Cacheable	|
+|-----------	|------------------------------------------------------------------------------------------------------	|----------	|----------	|
+| `--app`    	| Application directory name that will contain the module                                              	| **Yes** If not cached  	| **Yes**  	|
+| `--module` 	| Module name in the app directory. 	| **Yes** If not cached  	| **Yes**  	|
+| `--style` 	| Defines the generated component style mode, it can be `styled` \| `scss` \| `all`, defaults to `all` 	| **No**   	| **Yes**  	|
+
+
+## Cached Data
+
+By default, the `--app` `--module` and `--style` values are cached from the last command you created, this will make it easier to not pass the option every time you want to create a module or a component.
 
 ## Change Log
 
