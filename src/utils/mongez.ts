@@ -24,5 +24,7 @@ export const wizardCache = {
         if (!fs.exists(mongezRoot(wizardCacheFile))) return content;
 
         content = fs.getJson(mongezRoot(wizardCacheFile));
+
+        return content;
     }
 }

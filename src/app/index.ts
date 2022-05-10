@@ -47,7 +47,7 @@ export default function letTheMagicBegin() {
 
             wizardCache.set('app', app);
 
-            let module = wizardCache.get('module ', options.module);
+            let module = wizardCache.get('module', options.module);
 
             if (!module) {
                 return messages.error(`--module option is required`);
