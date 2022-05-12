@@ -1,8 +1,8 @@
 import URLS from "apps/{{ appName }}/helpers/urls";
-import { publicRoutes } from "apps/{{ appName }}/helpers/router";
+import { {{ routeMethod }} } from "apps/{{ appName }}/helpers/router";
 import {{ ModuleComponentPage }} from "./components/{{ ModuleComponentPage }}";
 
-publicRoutes([
+{{ routeMethod }}([
   {
     path: URLS.{{ route }},
     component: {{ ModuleComponentPage }},

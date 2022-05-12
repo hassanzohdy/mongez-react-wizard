@@ -73,7 +73,7 @@ Available Options
 
 similarly to generating new module, except this command will generate only component structure.
 
-`npx engez component ContactUsForm --module contact-us --app=front-office`
+`npx engez component ContactUsForm --module contact-us --app front-office`
 
 This will generate a new component directory inside `src/apps/front-office/contact-us/components` called `ContactUsForm`.
 

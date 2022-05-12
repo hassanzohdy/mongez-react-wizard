@@ -9,7 +9,7 @@ let content = {};
 let loaded: boolean = false;
 
 export const wizardCache = {
-    get(key: string, defaultValue: any): any {
+    get(key: string, defaultValue: any = null): any {
         return Obj.get(this.content(), key, defaultValue);
     },
     set(key: string, value: any) {

@@ -11,10 +11,12 @@ export default function letTheMagicBegin() {
     program
         .command("module <moduleName>")
         .option('--style <mode>', 'Defines the generated component style mode, it can be styled | scss | all, defaults to all')
+        .option("--route <route>", "Module Route")
+        .option("--routeMethod <routeMethod>", "Module Route Method that will be called from the router helpers")
         .option("--app <app>", "Application directory name that will contain the module")
         .description("Create React Module")
         .action((moduleName, options) => {
-            let app = wizardCache.get('app', options.app);
+            let app = options.app || wizardCache.get('app');
 
             if (!app) {
                 messages.error(`--app option is required`);
@@ -28,6 +30,8 @@ export default function letTheMagicBegin() {
                 module: moduleName,
                 app: app,
                 style: options.style,
+                route: options.route,
+                routeMethod: options.routeMethod,
             });
         });
 
@@ -39,7 +43,7 @@ export default function letTheMagicBegin() {
         .option('--style <mode>', 'Defines the generated component style mode, it can be styled | scss | all')
         .description("Create React Component")
         .action((componentName, options) => {
-            let app = wizardCache.get('app', options.app);
+            let app = options.app || wizardCache.get('app');
 
             if (!app) {
                 return messages.error(`--app option is required`);
@@ -47,7 +51,7 @@ export default function letTheMagicBegin() {
 
             wizardCache.set('app', app);
 
-            let module = wizardCache.get('module', options.module);
+            let module = options.module || wizardCache.get('module');
 
             if (!module) {
                 return messages.error(`--module option is required`);

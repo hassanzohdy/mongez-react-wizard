@@ -1,6 +1,6 @@
 {
     "name": "@mongez/react-wizard",
-    "version": "1.1.8",
+    "version": "1.1.9",
     "main": "src/index.ts",
     "description": "A Wizard Tool For React Js",
     "license": "MIT",
@@ -11,6 +11,7 @@
         "start": "ts-node src/index.ts"
     },
     "dependencies": {
+        "@mongez/concat-route": "^1.0.0",
         "@mongez/fs": "^1.0.3",
         "@mongez/reinforcements": "^1.0.22",
         "@mongez/supportive-is": "^1.0.5",
