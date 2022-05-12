@@ -1,6 +1,6 @@
 import concatRoute from "@mongez/concat-route";
 import fs from "@mongez/fs";
-import { toCamelCase, toStudlyCase } from "@mongez/reinforcements";
+import { ltrim, toCamelCase, toStudlyCase } from "@mongez/reinforcements";
 import chalk from "chalk";
 import { messages } from "../utils/messages";
 import { wizardCache } from "../utils/mongez";
@@ -31,7 +31,7 @@ export default function createModule({ style, routeMethod, module, app, route, }
     }
 
     if (fs.isDirectory(moduleDirectory)) {
-        throw messages.error(`${app} module exists in src/apps/${app} directory.`);
+        throw messages.error(`${app}/${module} module exists in src/apps/${app} directory.`);
     }
 
     if (!routeMethod) {
@@ -97,11 +97,11 @@ export default function createModule({ style, routeMethod, module, app, route, }
 function updateUrls(route: string, appDirectory: string) {
     let searchFor = `  // append urls here, DO NOT remove this line`;
 
-    let urlsPath = appDirectory + `/utils/urls`;
+    let urlsPath = appDirectory + `/utils/urls.ts`;
 
     if (!fs.exists(urlsPath)) return;
 
-    let urlsContent = fs.get(urlsPath).replace(searchFor, `  ${toCamelCase(route)}: '${route}',\r\n${searchFor}`);
+    let urlsContent = fs.get(urlsPath).replace(searchFor, `  ${toCamelCase(ltrim(route, '/').replace('/', '-'))}: '${route}',\r\n${searchFor}`);
 
     fs.put(urlsPath, urlsContent);
 }
