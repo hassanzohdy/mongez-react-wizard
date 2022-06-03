@@ -9,99 +9,124 @@ import { generateStub } from "../utils/stubs";
 import createComponent from "./createComponent";
 
 export type ModuleCreator = {
-    app: string;
-    module: string;
-    style?: 'scss' | 'styled' | 'all';
-    route?: string;
-    routeMethod?: string;
-}
+  app: string;
+  module: string;
+  style?: "scss" | "styled" | "all";
+  route?: string;
+  routeMethod?: string;
+};
 
-export default function createModule({ style, routeMethod, module, app, route, }: ModuleCreator) {
-    const appDirectory = apps(app);
-    const moduleDirectory = apps(app, module);
+export default function createModule({
+  style,
+  routeMethod,
+  module,
+  app,
+  route,
+}: ModuleCreator) {
+  const appDirectory = apps(app);
+  const moduleDirectory = apps(app, module);
 
-    if (!route) {
-        route = '/' + toCamelCase(module);
-    }
+  if (!route) {
+    route = "/" + toCamelCase(module);
+  }
 
-    route = concatRoute(route);
+  route = concatRoute(route);
 
-    if (!fs.isDirectory(appDirectory)) {
-        return messages.error(`${app} app does not exist in src/apps directory.`);
-    }
+  if (!fs.isDirectory(appDirectory)) {
+    return messages.error(`${app} app does not exist in src/apps directory.`);
+  }
 
-    if (fs.isDirectory(moduleDirectory)) {
-        throw messages.error(`${app}/${module} module exists in src/apps/${app} directory.`);
-    }
+  if (fs.isDirectory(moduleDirectory)) {
+    throw messages.error(
+      `${app}/${module} module exists in src/apps/${app} directory.`
+    );
+  }
 
-    if (!routeMethod) {
-        routeMethod = wizardCache.get('routeMethod', 'publicRoutes');
-    }
+  if (!routeMethod) {
+    routeMethod = wizardCache.get("routeMethod", "publicRoutes");
+  }
 
-    wizardCache.set('routeMethod', routeMethod);
+  wizardCache.set("routeMethod", routeMethod);
 
-    const data = {
-        module: toCamelCase(module),
-        Module: toStudlyCase(module),
-    }
+  const data = {
+    module: toCamelCase(module),
+    Module: toStudlyCase(module),
+  };
 
-    console.log(chalk.cyan(`Creating ${toStudlyCase(data.Module)} Module...`));
+  console.log(chalk.cyan(`Creating ${toStudlyCase(data.Module)} Module...`));
 
-    const replacements = {
-        '{{ appName }}': app,
-        '{{ moduleName }}': module,
-        '{{ ModuleName }}': data.Module,
-        '{{ ModuleComponentPage }}': data.Module + 'Page',
-        '{{ route }}': toCamelCase(route),
-        '{{ routeString }}': route,
-        '{{ routeMethod }}': routeMethod,
-        '{{ ModuleService }}': data.Module + 'Service',
-        '{{ moduleService }}': data.module + 'Service',
-    }
+  const replacements = {
+    "{{ appName }}": app,
+    "{{ moduleName }}": module,
+    "{{ ModuleName }}": data.Module,
+    "{{ ModuleComponentPage }}": data.Module + "Page",
+    "{{ route }}": ltrim(toCamelCase(route), "/"),
+    "{{ routeString }}": route,
+    "{{ routeMethod }}": routeMethod,
+    "{{ ModuleService }}": data.Module + "Service",
+    "{{ moduleService }}": data.module + "Service",
+  };
 
-    // clone the module
-    fs.copy(cloneable('module'), moduleDirectory);
+  // clone the module
+  fs.copy(cloneable("module"), moduleDirectory);
 
-    // start replacing files
-    // routes file
-    generateStub(moduleDirectory + '/routes.stub', moduleDirectory + '/routes.ts', replacements);
+  // start replacing files
+  // routes file
+  generateStub(
+    moduleDirectory + "/routes.stub",
+    moduleDirectory + "/routes.ts",
+    replacements
+  );
 
-    // services file
-    generateStub(moduleDirectory + '/services/service.stub', moduleDirectory + '/services/service.ts', replacements);
+  // services file
+  generateStub(
+    moduleDirectory + "/services/service.stub",
+    moduleDirectory + "/services/service.ts",
+    replacements
+  );
 
-    createComponent({
-        module,
-        style,
-        app,
-        component: data.Module + 'Page',
-        imports: 'import Helmet from "@mongez/react-helmet";',
-        prependToComponent: `<Helmet title="${data.Module + 'Page'}" />`,
-    });
+  createComponent({
+    module,
+    style,
+    app,
+    component: data.Module + "Page",
+    imports: 'import Helmet from "@mongez/react-helmet";',
+    prependToComponent: `<Helmet title="${data.Module + "Page"}" />`,
+  });
 
-    // Update app routes
-    const appModulesPath = appDirectory + `/${app}-modules.json`;
-    const appModules: any = fs.getJson(appModulesPath);
+  // Update app routes
+  const appModulesPath = appDirectory + `/${app}-modules.json`;
+  const appModules: any = fs.getJson(appModulesPath);
 
-    appModules.modules.unshift({
-        entry: [route],
-        module,
-    });
+  appModules.modules.unshift({
+    entry: [route],
+    module,
+  });
 
-    fs.putJson(appModulesPath, appModules);
+  fs.putJson(appModulesPath, appModules);
 
-    updateUrls(route, appDirectory);
+  updateUrls(route, appDirectory);
 
-    console.log(chalk.greenBright(`${data.Module} Module Has Been Created Successfully.`));
+  console.log(
+    chalk.greenBright(`${data.Module} Module Has Been Created Successfully.`)
+  );
 }
 
 function updateUrls(route: string, appDirectory: string) {
-    let searchFor = `  // append urls here, DO NOT remove this line`;
+  let searchFor = `  // append urls here, DO NOT remove this line`;
 
-    let urlsPath = appDirectory + `/utils/urls.ts`;
+  let urlsPath = appDirectory + `/utils/urls.ts`;
 
-    if (!fs.exists(urlsPath)) return;
+  if (!fs.exists(urlsPath)) return;
 
-    let urlsContent = fs.get(urlsPath).replace(searchFor, `  ${toCamelCase(ltrim(route, '/').replace('/', '-'))}: '${route}',\r\n${searchFor}`);
+  let urlsContent = fs
+    .get(urlsPath)
+    .replace(
+      searchFor,
+      `  ${toCamelCase(
+        ltrim(route, "/").replace("/", "-")
+      )}: '${route}',\r\n${searchFor}`
+    );
 
-    fs.put(urlsPath, urlsContent);
+  fs.put(urlsPath, urlsContent);
 }
