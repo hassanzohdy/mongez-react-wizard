@@ -1,6 +1,4 @@
-import {{ Component }} from './{{ Component }}';
+export { default } from './{{ Component }}';
 
 // types
 export * from './types';
-
-export default {{ Component }};

@@ -1,0 +1,77 @@
+#! /usr/bin/env node
+const axios = require("axios");
+const fs = require("@mongez/fs");
+const { objMerge } = require("@mongez/reinforcements");
+const chalk = require("chalk");
+
+const rootPath = process.cwd();
+
+const localizationPostDataPath = rootPath + "/localization-post.json";
+
+if (!fs.exists(localizationPostDataPath)) {
+  fs.putJson(localizationPostDataPath, {});
+}
+
+const localizationData = fs.getJson(localizationPostDataPath);
+
+const localizationUrl = "https://apps.mentoor.io/localization/index.php";
+
+const localizationDirectory = rootPath + "/src/shared/localization";
+
+if (!fs.isDir(localizationDirectory)) {
+  fs.makeDirectory(localizationDirectory);
+}
+
+if (!localizationData || Object.keys(localizationData).length === 0) {
+  console.log(chalk.yellow("Fetching localization data..."));
+  return fetchLocalization();
+}
+
+function fetchLocalization() {
+  axios.get(localizationUrl).then(response => {
+    for (const group in response.data.translations) {
+      console.log(`Updating ${chalk.cyan(group)} localization data...`);
+      const data = response.data.translations[group];
+      const path = localizationDirectory + "/" + group + ".json";
+      const fileData = fs.exists(path) ? fs.getJson(path) || {} : {};
+
+      if (Object.keys(data).length > Object.keys(fileData).length) {
+        console.log(
+          `There are ${chalk.green(
+            Object.keys(data).length - Object.keys(fileData).length,
+          )} ${chalk.green("new")} keywords in ${group} will be added`,
+        );
+      }
+
+      const newData = objMerge(fileData, data);
+      fs.putJson(path, newData);
+    }
+
+    console.log(chalk.green("Localization data has been fetched successfully"));
+  });
+}
+
+function postLocalization() {
+  const requestData = localizationData.translations
+    ? localizationData
+    : { translations: localizationData };
+
+  axios.post(localizationUrl, requestData).then(response => {
+    console.log(response.data.addedKeywords);
+    for (const group in response.data.addedKeywords) {
+      const addedKeywords = response.data.addedKeywords[group];
+      console.log(
+        `Added new ${
+          addedKeywords === 0 ? chalk.cyan("0") : chalk.green(addedKeywords)
+        } keywords in ${group} group`,
+      );
+    }
+
+    console.log(chalk.green("Localization data has been posted successfully"));
+
+    fetchLocalization();
+    fs.putJson(localizationPostDataPath, {});
+  });
+}
+
+postLocalization();
