@@ -26,7 +26,7 @@ program
   .option("-g, --groups <groups>", "Comma separated list of groups")
   .option("--except <except>", "Comma separated list of groups to exclude")
   .option(
-    "-cp, --cache-options",
+    "-co, --cache-options",
     "cache the options so when running the command next time without cache it will use the options from the cache"
   )
   .option(
@@ -64,8 +64,6 @@ program
       localizationCache.set("cached", true);
     }
 
-    localizationCache.set();
-
     const localizationData = fs.getJson(localizationPostDataPath);
 
     let localizationDirectory = path.resolve(
@@ -77,10 +75,9 @@ program
       fs.makeDirectory(localizationDirectory);
     }
 
-    const localizationUrl = localizationCache.get(
-      "cloudLocalizationUrl",
-      defaultLocalizationUrl
-    );
+    const localizationUrl =
+      localizationCache.get("cloudLocalizationUrl", defaultLocalizationUrl) ||
+      defaultLocalizationUrl;
 
     if (!localizationData || Object.keys(localizationData).length === 0) {
       console.log(chalk.yellow("Fetching localization data..."));
