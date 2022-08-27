@@ -2,29 +2,37 @@ import fs from "@mongez/fs";
 import { Obj } from "@mongez/reinforcements";
 import { mongezRoot } from "./paths";
 
-const wizardCacheFile = 'react-wizard.json';
+const wizardCacheFile = "react-wizard.json";
 
-let content = {};
+export const wizardCache = makeCache(wizardCacheFile);
 
-let loaded: boolean = false;
+export function makeCache(wizardFilePath: string, defaultData: any = {}) {
+  let content = {};
+  let loaded: boolean = false;
 
-export const wizardCache = {
+  if (!fs.exists(mongezRoot(wizardFilePath))) {
+    fs.putJson(mongezRoot(wizardFilePath), defaultData);
+  }
+
+  return {
     get(key: string, defaultValue: any = null): any {
-        return Obj.get(this.content(), key, defaultValue);
+      return Obj.get(this.content(), key, defaultValue);
     },
     set(key: string, value: any) {
-        Obj.set(content, key, value);
-        fs.putJson(mongezRoot(wizardCacheFile), content);
+      Obj.set(content, key, value);
+      fs.putJson(mongezRoot(wizardFilePath), content);
     },
     content(): any {
-        if (loaded) return content;
+      if (loaded) return content;
 
-        loaded = true;
+      loaded = true;
 
-        if (!fs.exists(mongezRoot(wizardCacheFile))) return content;
+      content = fs.getJson(mongezRoot(wizardFilePath));
 
-        content = fs.getJson(mongezRoot(wizardCacheFile));
-
-        return content;
-    }
+      return content;
+    },
+    all(): any {
+      return this.content();
+    },
+  };
 }

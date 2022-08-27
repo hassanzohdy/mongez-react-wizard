@@ -3,75 +3,156 @@ const axios = require("axios");
 const fs = require("@mongez/fs");
 const { objMerge } = require("@mongez/reinforcements");
 const chalk = require("chalk");
+const { program } = require("commander");
+const path = require("path");
+
+let defaultLocalizationUrl = "https://apps.mentoor.io/localization/index.php";
 
 const rootPath = process.cwd();
 
-const localizationPostDataPath = rootPath + "/localization-post.json";
+const { makeCache } = require("./cjs/utils/mongez");
 
-if (!fs.exists(localizationPostDataPath)) {
-  fs.putJson(localizationPostDataPath, {});
-}
+const localizationCache = makeCache("localization.json", {
+  groups: [],
+  except: [],
+  namespace: "",
+  privateNamespace: false,
+  localizationDirectory: "./src/shared/localization",
+  cloudLocalizationUrl: "",
+  localizationPost: "./localization-post.json",
+});
 
-const localizationData = fs.getJson(localizationPostDataPath);
+program
+  .option("-g, --groups <groups>", "Comma separated list of groups")
+  .option("--except <except>", "Comma separated list of groups to exclude")
+  .option(
+    "-cp, --cache-options",
+    "cache the options so when running the command next time without cache it will use the options from the cache"
+  )
+  .option(
+    "-ns, --namespace <namespace>",
+    "Manage translations in the namespace"
+  )
+  .action((options) => {
+    const localizationPostDataPath = path.resolve(
+      rootPath,
+      localizationCache.get("localizationPostFile", "localization-post.json")
+    );
 
-const localizationUrl = "https://apps.mentoor.io/localization/index.php";
+    if (!fs.exists(localizationPostDataPath)) {
+      fs.putJson(localizationPostDataPath, {});
+    }
 
-const localizationDirectory = rootPath + "/src/shared/localization";
+    if (localizationCache.get("cached")) {
+      options = { ...localizationCache.all(), options };
+    }
 
-if (!fs.isDir(localizationDirectory)) {
-  fs.makeDirectory(localizationDirectory);
-}
+    if (options.namespace === true) {
+      options.namespace = localizationCache.get("namespace");
+    }
 
-if (!localizationData || Object.keys(localizationData).length === 0) {
-  console.log(chalk.yellow("Fetching localization data..."));
-  return fetchLocalization();
-}
+    if (options.namespace) {
+      options.privateNamespace = localizationCache.get("privateNamespace");
+    }
 
-function fetchLocalization() {
-  axios.get(localizationUrl).then(response => {
-    for (const group in response.data.translations) {
-      console.log(`Updating ${chalk.cyan(group)} localization data...`);
-      const data = response.data.translations[group];
-      const path = localizationDirectory + "/" + group + ".json";
-      const fileData = fs.exists(path) ? fs.getJson(path) || {} : {};
-
-      if (Object.keys(data).length > Object.keys(fileData).length) {
-        console.log(
-          `There are ${chalk.green(
-            Object.keys(data).length - Object.keys(fileData).length,
-          )} ${chalk.green("new")} keywords in ${group} will be added`,
-        );
+    if (options.cacheOptions) {
+      delete options.cacheOptions;
+      for (let key in options) {
+        localizationCache.set(key, options[key]);
       }
 
-      const newData = objMerge(fileData, data);
-      fs.putJson(path, newData);
+      localizationCache.set("cached", true);
     }
 
-    console.log(chalk.green("Localization data has been fetched successfully"));
-  });
-}
+    localizationCache.set();
 
-function postLocalization() {
-  const requestData = localizationData.translations
-    ? localizationData
-    : { translations: localizationData };
+    const localizationData = fs.getJson(localizationPostDataPath);
 
-  axios.post(localizationUrl, requestData).then(response => {
-    console.log(response.data.addedKeywords);
-    for (const group in response.data.addedKeywords) {
-      const addedKeywords = response.data.addedKeywords[group];
-      console.log(
-        `Added new ${
-          addedKeywords === 0 ? chalk.cyan("0") : chalk.green(addedKeywords)
-        } keywords in ${group} group`,
-      );
+    let localizationDirectory = path.resolve(
+      rootPath,
+      localizationCache.get("localizationDirectory", "src/shared/localization")
+    );
+
+    if (!fs.isDir(localizationDirectory)) {
+      fs.makeDirectory(localizationDirectory);
     }
 
-    console.log(chalk.green("Localization data has been posted successfully"));
+    const localizationUrl = localizationCache.get(
+      "cloudLocalizationUrl",
+      defaultLocalizationUrl
+    );
 
-    fetchLocalization();
-    fs.putJson(localizationPostDataPath, {});
+    if (!localizationData || Object.keys(localizationData).length === 0) {
+      console.log(chalk.yellow("Fetching localization data..."));
+      return fetchLocalization();
+    }
+
+    function fetchLocalization() {
+      axios
+        .get(localizationUrl, {
+          params: options,
+        })
+        .then((response) => {
+          for (const group in response.data.translations) {
+            console.log(`Updating ${chalk.cyan(group)} localization data...`);
+            const data = response.data.translations[group];
+            const path = localizationDirectory + "/" + group + ".json";
+            const fileData = fs.exists(path) ? fs.getJson(path) || {} : {};
+
+            if (Object.keys(data).length > Object.keys(fileData).length) {
+              console.log(
+                `There are ${chalk.green(
+                  Object.keys(data).length - Object.keys(fileData).length
+                )} ${chalk.green("new")} keywords in ${group} will be added`
+              );
+            }
+
+            const newData = objMerge(fileData, data);
+            fs.putJson(path, newData);
+          }
+
+          console.log(
+            chalk.green("Localization data has been fetched successfully")
+          );
+        });
+    }
+
+    function postLocalization() {
+      const requestData = localizationData.translations
+        ? localizationData
+        : { translations: localizationData };
+
+      if (options.namespace) {
+        requestData.namespace = options.namespace;
+      }
+
+      axios.post(localizationUrl, requestData).then((response) => {
+        for (const group in response.data.addedKeywords) {
+          const addedKeywords = response.data.addedKeywords[group];
+          console.log(
+            `Added new ${
+              addedKeywords === 0 ? chalk.cyan("0") : chalk.green(addedKeywords)
+            } keywords in ${group} group`
+          );
+        }
+
+        console.log(
+          chalk.green("Localization data has been posted successfully")
+        );
+
+        fetchLocalization();
+
+        // clear the translations and keep only the group name
+
+        // for (const group in localizationData) {
+        //   localizationData[group] = {};
+        // }
+
+        fs.putJson(localizationPostDataPath, localizationData);
+      });
+    }
+
+    postLocalization();
   });
-}
 
-postLocalization();
+program.parse(process.argv);
