@@ -6,6 +6,10 @@ const wizardCacheFile = "react-wizard.json";
 
 export const wizardCache = makeCache(wizardCacheFile);
 
+if (!fs.isDirectory(mongezRoot())) {
+  fs.makeDirectory(mongezRoot(), 777);
+}
+
 export function makeCache(wizardFilePath: string, defaultData: any = {}) {
   let content = {};
   let loaded: boolean = false;

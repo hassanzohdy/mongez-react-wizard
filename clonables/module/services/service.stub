@@ -4,7 +4,7 @@ class {{ ModuleService }} extends RestfulEndpoint {
   /**
    * {@inheritDoc}
    */
-  public route: string = '{{ routeString }}';
+  public route = '{{ routeString }}';
 }
 
 const {{ moduleService }}: {{ ModuleService }} = new {{ ModuleService }}();
